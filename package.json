@@ -1,0 +1,56 @@
+{
+	"name": "iron-iot-phub~build-1",
+	"version": "0.0.1",
+	"private": true,
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "npm run dl-common && npm run babel",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "npm run build && chmod +x ./common/scripts/start.sh && ./common/scripts/start.sh",
+		"babel": "babel src --out-dir dist",
+		"dl-common": "wget https://raw.githubusercontent.com/ironman9967/iron-iot-common/master/scripts/prep.sh && chmod +x prep.sh && ./prep.sh && rm -rf prep.sh",
+		"bump": "npm version $1",
+		"release": "chmod +x ./common/scripts/release.sh && ./common/scripts/release.sh v$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')",
+		"release-patch": "npm run bump -- patch && npm run release"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:ironman9967/iron-iot-phub~build-1"
+	},
+	"keywords": [],
+	"author": "Tyson Hester",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/ironman9967/iron-iot-phub~build-1/issues"
+	},
+	"homepage": "https://github.com/ironman9967/iron-iot-phub~build-1#readme",
+	"devDependencies": {
+		"babel-cli": "^6.24.1",
+		"babel-plugin-transform-object-rest-spread": "^6.23.0",
+		"babel-preset-env": "^1.6.0",
+		"watch": "^1.0.2"
+	},
+	"dependencies": {
+		"good": "^7.2.0",
+		"good-console": "^6.4.0",
+		"good-squeeze": "^5.0.2",
+		"hapi": "^16.5.2",
+		"inert": "^4.2.1"
+	},
+	"babel": {
+		"presets": [
+			[
+				"env",
+				{
+					"targets": {
+						"node": "current"
+					}
+				}
+			]
+		],
+		"plugins": [
+			"transform-object-rest-spread"
+		]
+	}
+}
