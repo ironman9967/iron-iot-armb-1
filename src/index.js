@@ -1,1 +1,1 @@
-console.log('phub~build-1 app')
+console.log('armb-1 app')
