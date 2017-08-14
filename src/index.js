@@ -1,9 +1,10 @@
 
 import path from 'path'
-import { copy } from 'fs-extra'
 import { exec } from 'child_process'
 
 import {
+	copy,
+	ensureDirSync,
 	emptyDirSync,
 	createWriteStream,
 	removeSync
@@ -63,11 +64,35 @@ const runBuildApp = buildDir => new Promise((resolve, reject) => {
 		}
 	})
 })
+const tarBuild = (buildDir, filename) => new Promise((resolve, reject) => {
+	const builtFilename = `built_${filename.substring(filename.indexOf('_') + 1)}`
+	ensureDirSync('./builds')
+	const args = [
+		'tar',
+		'cvzf',
+		path.resolve(path.join('./builds/', builtFilename)),
+		`./${buildDir}`
+	]
+	exec(args.join(' '), { cwd: buildDir }, (err, stdout, stderr) => {
+		if (err) {
+			err.stdout = stdout
+			err.stderr = stderr
+			reject(err)
+		}
+		else {
+			resolve({
+				stdout,
+				stderr
+			})
+		}
+	})
+})
 
-const build = buildFilename => {
+const build = (filename, buildFilename) => {
 	const buildDir = path.dirname(buildFilename)
 	return copyCommon(buildDir)
 		.then(() => runBuildApp(buildDir))
+		.then(() => tarBuild(buildDir, filename))
 }
 
 rp({
@@ -86,6 +111,6 @@ rp({
 			request({ uri, headers: { 'User-Agent': 'iron-iot-armb-1' } })
 				.pipe(createWriteStream(buildFilename))
 
-			build(buildFilename)//.then(() => removeSync(buildDir))
+			build(filename, buildFilename)//.then(() => removeSync(buildDir))
 		})
 	)
