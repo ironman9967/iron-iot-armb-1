@@ -14,6 +14,7 @@ import { createPrebuildDownloader } from './prebuild-downloader'
 import { createBuilder } from './builder'
 import { createBuildPoster } from './build-poster'
 import { createHttpServer } from './http-server'
+import { routeApi } from './http-server/api'
 
 const port = 9978
 
@@ -26,6 +27,9 @@ emptyDirSync('./builds')
 createBuildPoster({ buildComplete })
 	.then(() => createBuilder({ readyToBuild, buildComplete }))
 	.then(() => createHttpServer({ port, downloadPrebuild }))
+	.then(server => routeApi(server, {
+		downloadPrebuild
+	}))
 	.then(server => server.start(err => {
 		if (err) {
 			throw err
