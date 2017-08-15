@@ -52,15 +52,10 @@ export const createBuilder = ({
 		]
 		exec(args.join(' '), { cwd: buildDir }, (err, stdout, stderr) => {
 			if (err) {
-				err.stdout = stdout
-				err.stderr = stderr
 				reject(err)
 			}
 			else {
-				resolve({
-					stdout,
-					stderr
-				})
+				resolve()
 			}
 		})
 	})
@@ -70,21 +65,16 @@ export const createBuilder = ({
 		ensureDirSync('./builds')
 		const args = [
 			'tar',
-			'czvf',
+			'czf',
 			`../builds/${builtFilename}`,
 			'.'
 		]
 		exec(args.join(' '), { cwd: buildDir }, (err, stdout, stderr) => {
 			if (err) {
-				err.stdout = stdout
-				err.stderr = stderr
 				reject(err)
 			}
 			else {
-				resolve({
-					stdout,
-					stderr
-				})
+				resolve()
 			}
 		})
 	})
