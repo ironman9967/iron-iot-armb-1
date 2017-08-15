@@ -1,117 +1,45 @@
 
 import path from 'path'
-import { exec } from 'child_process'
 
 import {
-	copy,
-	ensureDirSync,
 	emptyDirSync,
-	createWriteStream,
-	removeSync
+	createWriteStream
 } from 'fs-extra'
-
-import each from 'lodash/fp/each'
+import { Subject } from '@reactivex/rxjs/dist/cjs/Subject'
 import request from 'request'
+import each from 'lodash/fp/each'
 import rp from 'request-promise'
 
-const setExecPerms = file => new Promise((resolve, reject) => {
-	exec([ 'chmod', '+x', file ].join(' '),
-		(err, stdout, stderr) => {
-			if (err) {
-				err.stdout = stdout
-				err.stderr = stderr
-				reject(err)
-			}
-			else {
-				resolve()
-			}
-		})
-})
-const copyCommon = buildDir => new Promise((resolve, reject) => {
-	const commonDir = path.join(buildDir, 'common')
-	copy('./common', commonDir, err =>
-		err
-			? reject(err)
-			: resolve(setExecPerms(path.join(commonDir, 'scripts/build-app.sh'))))
-})
-const runBuildApp = buildDir => new Promise((resolve, reject) => {
-	const buildScript = path.join(buildDir, 'common', 'scripts/build-app.sh')
-	const [
-		, model,
-		iteration,
-		version
-	] = buildDir.match(/temp-prebuild_(.*)-(.*)_app_(.*)\.tar\.gz/)
-	const args = [
-		'cd',
-		buildDir,
-		'&&',
-		buildScript,
-		version,
-		model,
-		iteration
-	]
-	exec(args.join(' '), { cwd: buildDir }, (err, stdout, stderr) => {
+import { createPrebuildDownloader } from './prebuild-downloader'
+import { createBuilder } from './builder'
+import { createBuildPoster } from './build-poster'
+import { createHttpServer } from './http-server'
+
+const port = 9978
+
+const downloadPrebuild = new Subject()
+const readyToBuild = new Subject()
+const buildComplete = new Subject()
+
+emptyDirSync('./builds')
+
+createBuildPoster({ buildComplete })
+	.then(() => createBuilder({ readyToBuild, buildComplete }))
+	.then(() => createHttpServer({ port, downloadPrebuild }))
+	.then(server => server.start(err => {
 		if (err) {
-			err.stdout = stdout
-			err.stderr = stderr
-			reject(err)
+			throw err
 		}
 		else {
-			resolve({
-				stdout,
-				stderr
-			})
+			console.log(`server up on ${port}`)
+			createPrebuildDownloader({ downloadPrebuild, readyToBuild })
+				.then(({ downloadPrebuildList }) => downloadPrebuildList())
+				.then(
+					each(({ getPrebuild, postBuilt }) =>
+						downloadPrebuild.next({
+							getPrebuild: getPrebuild.substring(1),
+							postBuilt: postBuilt.substring(1)
+						}))
+				)
 		}
-	})
-})
-const tarBuild = (buildDir, filename) => new Promise((resolve, reject) => {
-	const builtFilename = `built_${filename.substring(filename.indexOf('_') + 1)}`
-	ensureDirSync('./builds')
-	const args = [
-		'tar',
-		'czvf',
-		`../builds/${builtFilename}`,
-		'.'
-	]
-	exec(args.join(' '), { cwd: buildDir }, (err, stdout, stderr) => {
-		if (err) {
-			err.stdout = stdout
-			err.stderr = stderr
-			reject(err)
-		}
-		else {
-			resolve({
-				stdout,
-				stderr
-			})
-		}
-	})
-})
-
-const build = buildFilename => {
-	const buildDir = path.dirname(buildFilename)
-	const sections = buildFilename.split('/')
-	const filename = sections[sections.length - 1]
-	return copyCommon(buildDir)
-		.then(() => runBuildApp(buildDir))
-		.then(() => tarBuild(buildDir, filename))
-}
-
-rp({
-	uri: `${process.env.CLOUD_URI}/api/bin/devices/prebuilds`,
-	headers: { 'User-Agent': 'iron-iot-armb-1' },
-	json: true
-})
-	.then(
-		each(route => {
-			const sections = route.split('/')
-			const filename = sections[sections.length - 1]
-			const buildDir = `./temp-${filename}`
-			const buildFilename = path.resolve(path.join(buildDir, filename))
-			const uri = `${process.env.CLOUD_URI}${route}`
-			emptyDirSync(buildDir)
-			request({ uri, headers: { 'User-Agent': 'iron-iot-armb-1' } })
-				.pipe(createWriteStream(buildFilename))
-			build(buildFilename).then(() => removeSync(buildDir))
-		})
-	)
+	}))
