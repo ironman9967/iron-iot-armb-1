@@ -3,4 +3,5 @@ node_modules/
 dist/
 common/
 temp*/
+temp/
 builds/

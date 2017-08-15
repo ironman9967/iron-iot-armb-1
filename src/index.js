@@ -69,9 +69,9 @@ const tarBuild = (buildDir, filename) => new Promise((resolve, reject) => {
 	ensureDirSync('./builds')
 	const args = [
 		'tar',
-		'cvzf',
-		path.resolve(path.join('./builds/', builtFilename)),
-		`./${buildDir}`
+		'czvf',
+		`../builds/${builtFilename}`,
+		'.'
 	]
 	exec(args.join(' '), { cwd: buildDir }, (err, stdout, stderr) => {
 		if (err) {
@@ -88,8 +88,10 @@ const tarBuild = (buildDir, filename) => new Promise((resolve, reject) => {
 	})
 })
 
-const build = (filename, buildFilename) => {
+const build = buildFilename => {
 	const buildDir = path.dirname(buildFilename)
+	const sections = buildFilename.split('/')
+	const filename = sections[sections.length - 1]
 	return copyCommon(buildDir)
 		.then(() => runBuildApp(buildDir))
 		.then(() => tarBuild(buildDir, filename))
@@ -106,11 +108,10 @@ rp({
 			const filename = sections[sections.length - 1]
 			const buildDir = `./temp-${filename}`
 			const buildFilename = path.resolve(path.join(buildDir, filename))
-			emptyDirSync(buildDir)
 			const uri = `${process.env.CLOUD_URI}${route}`
+			emptyDirSync(buildDir)
 			request({ uri, headers: { 'User-Agent': 'iron-iot-armb-1' } })
 				.pipe(createWriteStream(buildFilename))
-
-			build(filename, buildFilename)//.then(() => removeSync(buildDir))
+			build(buildFilename).then(() => removeSync(buildDir))
 		})
 	)
