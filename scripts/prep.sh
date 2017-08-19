@@ -16,7 +16,7 @@ echo "setting nvm to use $nodeVersion"
 nvm use "$nodeVersion"
 
 echo "getting app for armb 1"
-wget -O $APP_PATH/get-app.sh "https://raw.githubusercontent.com/ironman9967/iron-iot-cloud/master/scripts/get-app.sh"
+wget -O $APP_PATH/get-app.sh "https://raw.githubusercontent.com/ironman9967/iron-iot-common/master/scripts/get-app.sh"
 source $APP_PATH/get-app.sh armb 1
 
 source $APP_PATH/common/scripts/build-app.sh $version armb 1
