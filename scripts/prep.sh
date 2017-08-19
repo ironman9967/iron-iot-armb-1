@@ -21,7 +21,7 @@ source $APP_PATH/get-app.sh armb 1
 
 source $APP_PATH/common/scripts/build-app.sh $version armb 1
 
-rm -rf get-app.sh
+rm -rf $APP_PATH/get-app.sh
 
 echo "starting $repo app"
 chmod +x $APP_PATH/common/scripts/start.sh
