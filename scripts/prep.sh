@@ -1,10 +1,5 @@
 #!/bin/bash
 
-if [ "$CLOUD_API_URI" == "" ]
-then
-	export CLOUD_URI=http://tdh-home.asuscomm.com:9967
-fi
-
 source ./common/scripts/start-nvm.sh
 
 echo 'getting node version from cloud'
