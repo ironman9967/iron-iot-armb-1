@@ -30,6 +30,7 @@ createBuildPoster({ logger, buildComplete })
 	.then(() => createHttpServer({ port, logger, downloadPrebuild }))
 	.then(server => {
 		logger.subscribe(server.log)
+		return server
 	})
 	.then(server => routeApi({ server, logger, downloadPrebuild }))
 	.then(server => server.start(err => {
