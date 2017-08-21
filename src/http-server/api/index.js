@@ -1,7 +1,8 @@
 
 import { createPrebuildReadyApi } from './prebuild-ready'
 
-export const routeApi = (server, {
+export const routeApi = ({
+	server,
 	downloadPrebuild
 }) => {
 	const { createRoute: prebuildReadyRoute } = createPrebuildReadyApi({

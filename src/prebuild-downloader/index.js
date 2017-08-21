@@ -8,7 +8,11 @@ import {
 import request from 'request'
 import rp from 'request-promise'
 
-export const createPrebuildDownloader = ({ downloadPrebuild, readyToBuild }) => {
+export const createPrebuildDownloader = ({
+	logger,
+	downloadPrebuild,
+	readyToBuild
+}) => {
 	downloadPrebuild.subscribe(({
 		getPrebuild,
 		postBuilt
@@ -18,6 +22,13 @@ export const createPrebuildDownloader = ({ downloadPrebuild, readyToBuild }) => 
 		const buildDir = `./temp-${filename}`
 		const buildFilename = path.resolve(path.join(buildDir, filename))
 		const uri = `${process.env.CLOUD_URI}/${getPrebuild}`
+		logger.next('downloading prebuild', {
+			getPrebuild,
+			filename,
+			buildDir,
+			buildFilename,
+			uri
+		})
 		emptyDirSync(buildDir)
 		request({ uri, headers: { 'User-Agent': 'iron-iot-armb-1' } })
 			.pipe(createWriteStream(buildFilename))
@@ -28,10 +39,14 @@ export const createPrebuildDownloader = ({ downloadPrebuild, readyToBuild }) => 
 	})
 
 	return Promise.resolve({
-		downloadPrebuildList: () => rp({
-			uri: `${process.env.CLOUD_URI}/api/bin/devices/prebuilds`,
-			headers: { 'User-Agent': 'iron-iot-armb-1' },
-			json: true
-		})
+		downloadPrebuildList: () => {
+			const uri = `${process.env.CLOUD_URI}/api/bin/devices/prebuilds`
+			logger.next('downloading prebuild list', { uri })
+			return rp({
+				uri,
+				headers: { 'User-Agent': 'iron-iot-armb-1' },
+				json: true
+			})
+		}
 	})
 }

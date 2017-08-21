@@ -1,5 +1,6 @@
 
 export const createPrebuildReadyApi = ({
+	logger,
 	downloadPrebuild
 }) => {
 	const apiRoute = 'api/prebuild-ready'
@@ -19,6 +20,10 @@ export const createPrebuildReadyApi = ({
 					postBuilt
 				}
 			}, reply) => {
+				logger.next('prebuild ready', {
+					getPrebuild,
+					postBuilt
+				})
 				downloadPrebuild.next({
 					getPrebuild: getPrebuild.substring(1),
 					postBuilt: postBuilt.substring(1)

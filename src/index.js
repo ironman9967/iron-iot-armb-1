@@ -18,25 +18,27 @@ import { routeApi } from './http-server/api'
 
 const port = 9978
 
+const logger = new Subject()
 const downloadPrebuild = new Subject()
 const readyToBuild = new Subject()
 const buildComplete = new Subject()
 
 emptyDirSync('./builds')
 
-createBuildPoster({ buildComplete })
-	.then(() => createBuilder({ readyToBuild, buildComplete }))
-	.then(() => createHttpServer({ port, downloadPrebuild }))
-	.then(server => routeApi(server, {
-		downloadPrebuild
-	}))
+createBuildPoster({ logger, buildComplete })
+	.then(() => createBuilder({ logger, readyToBuild, buildComplete }))
+	.then(() => createHttpServer({ port, logger, downloadPrebuild }))
+	.then(server => {
+		logger.subscribe(server.log)
+	})
+	.then(server => routeApi({ server, logger, downloadPrebuild }))
 	.then(server => server.start(err => {
 		if (err) {
 			throw err
 		}
 		else {
 			console.log(`server up on ${port}`)
-			createPrebuildDownloader({ downloadPrebuild, readyToBuild })
+			createPrebuildDownloader({ logger, downloadPrebuild, readyToBuild })
 				.then(({ downloadPrebuildList }) => downloadPrebuildList())
 				.then(
 					each(({ getPrebuild, postBuilt }) =>
