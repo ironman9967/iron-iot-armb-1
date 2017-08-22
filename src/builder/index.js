@@ -33,7 +33,7 @@ export const createBuilder = ({
 			message: 'copying common',
 			data: {
 				from: './common',
-				to: commondDir
+				to: commonDir
 			}
 		})
 		copy('./common', commonDir, err =>
