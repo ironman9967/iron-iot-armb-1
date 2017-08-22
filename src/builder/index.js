@@ -56,7 +56,7 @@ export const createBuilder = ({
 				buildScript,
 				model,
 				iteration,
-				versions
+				version
 			}
 		})
 		const args = [
