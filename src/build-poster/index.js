@@ -7,10 +7,17 @@ import {
 
 import request from 'request'
 
-export const createBuildPoster = ({ buildComplete }) => {
+export const createBuildPoster = ({ logger, buildComplete }) => {
 	buildComplete.subscribe(({ postBuilt }) => {
 		const sections = postBuilt.split('/')
 		const buildFilename = path.resolve(`./builds/${sections[sections.length - 1]}`)
+		logger.next({
+			message: 'posting build',
+			data: {
+				buildFilename,
+				postBuilt
+			}
+		})
 		createReadStream(buildFilename)
 			.pipe(request({
 				method: 'POST',

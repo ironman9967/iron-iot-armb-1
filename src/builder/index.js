@@ -14,7 +14,7 @@ export const createBuilder = ({
 	buildComplete
 }) => {
 	const setExecPerms = file => new Promise((resolve, reject) => {
-		logger.next('setting exec perms', file)
+		logger.next({ message: 'setting exec perms', data: { file } })
 		exec([ 'chmod', '+x', file ].join(' '),
 			(err, stdout, stderr) => {
 				if (err) {
@@ -29,9 +29,12 @@ export const createBuilder = ({
 	})
 	const copyCommon = buildDir => new Promise((resolve, reject) => {
 		const commonDir = path.join(buildDir, 'common')
-		logger.next('copying common', {
-			from: './common',
-			to: commondDir
+		logger.next({
+			message: 'copying common',
+			data: {
+				from: './common',
+				to: commondDir
+			}
 		})
 		copy('./common', commonDir, err =>
 			err
@@ -47,11 +50,14 @@ export const createBuilder = ({
 			iteration,
 			version
 		] = buildDir.match(/temp-prebuild_(.*)-(.*)_app_(.*)\.tar\.gz/)
-		logger.next('building app', {
-			buildScript,
-			model,
-			iteration,
-			versions
+		logger.next({
+			message: 'building app',
+			data: {
+				buildScript,
+				model,
+				iteration,
+				versions
+			}
 		})
 		const args = [
 			'cd',
@@ -81,10 +87,13 @@ export const createBuilder = ({
 			`../builds/${builtFilename}`,
 			'.'
 		]
-		logger.next('taring app', {
-			buildDir,
-			filename,
-			args
+		logger.next({
+			message: 'taring app',
+			data: {
+				buildDir,
+				filename,
+				args
+			}
 		})
 		exec(args.join(' '), { cwd: buildDir }, (err, stdout, stderr) => {
 			if (err) {
@@ -103,10 +112,13 @@ export const createBuilder = ({
 		const buildDir = path.dirname(buildFilename)
 		const sections = buildFilename.split('/')
 		const filename = sections[sections.length - 1]
-		logger.next('ready to build', {
-			buildFilename,
-			buildDir,
-			filename
+		logger.next({
+			message: 'ready to build',
+			data: {
+				buildFilename,
+				buildDir,
+				filename
+			}
 		})
 		return copyCommon(buildDir)
 			.then(() => runBuildApp(buildDir))

@@ -29,7 +29,11 @@ createBuildPoster({ logger, buildComplete })
 	.then(() => createBuilder({ logger, readyToBuild, buildComplete }))
 	.then(() => createHttpServer({ port, logger, downloadPrebuild }))
 	.then(server => {
-		logger.subscribe((...args) => server.log.apply(server, args))
+		logger.subscribe(arg => {
+			const { message, data } =
+				typeof arg == 'string' ? { message: arg } : arg
+			server.log(message, data)
+		})
 		return server
 	})
 	.then(server => routeApi({ server, logger, downloadPrebuild }))
@@ -38,16 +42,15 @@ createBuildPoster({ logger, buildComplete })
 			throw err
 		}
 		else {
-			console.log(`server up on ${port}`)
+			logger.next(`server up on ${port}`)
 			createPrebuildDownloader({ logger, downloadPrebuild, readyToBuild })
 				.then(({ downloadPrebuildList }) => downloadPrebuildList())
-				.then(() => logger.next('asdf', args))
-				// .then(
-				// 	each(({ getPrebuild, postBuilt }) =>
-				// 		downloadPrebuild.next({
-				// 			getPrebuild: getPrebuild.substring(1),
-				// 			postBuilt: postBuilt.substring(1)
-				// 		}))
-				// )
+				.then(
+					each(({ getPrebuild, postBuilt }) =>
+						downloadPrebuild.next({
+							getPrebuild: getPrebuild.substring(1),
+							postBuilt: postBuilt.substring(1)
+						}))
+				)
 		}
 	}))
