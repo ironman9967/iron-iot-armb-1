@@ -19,7 +19,7 @@ echo "getting app for armb 1"
 wget -O $APP_PATH/get-app.sh "https://raw.githubusercontent.com/ironman9967/iron-iot-common/master/scripts/get-app.sh"
 source $APP_PATH/get-app.sh $APP_PATH armb 1
 
-source $APP_PATH/common/scripts/build-app.sh $version armb 1
+source $APP_PATH/common/scripts/build-app.sh $APP_PATH $version armb 1
 
 rm -rf $APP_PATH/get-app.sh
 

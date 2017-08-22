@@ -45,6 +45,12 @@ createBuildPoster({ logger, buildComplete })
 			logger.next(`server up on ${port}`)
 			createPrebuildDownloader({ logger, downloadPrebuild, readyToBuild })
 				.then(({ downloadPrebuildList }) => downloadPrebuildList())
+				.then(prebuildList => {
+					if (prebuildList.length == 0) {
+						logger.next('cloud has no prebuilds ready')
+					}
+					return prebuildList
+				})
 				.then(
 					each(({ getPrebuild, postBuilt }) =>
 						downloadPrebuild.next({

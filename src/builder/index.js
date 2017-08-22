@@ -64,6 +64,7 @@ export const createBuilder = ({
 			buildDir,
 			'&&',
 			buildScript,
+			buildDir,
 			version,
 			model,
 			iteration
@@ -123,9 +124,9 @@ export const createBuilder = ({
 		return copyCommon(buildDir)
 			.then(() => runBuildApp(buildDir))
 			.then(() => tarBuild(buildDir, filename))
-			.then(() => removeSync(buildDir))
-			.then(() => buildComplete.next({ postBuilt }))
-			.catch(err => logger.next(err.stack))
+			// .then(() => removeSync(buildDir))
+			// .then(() => buildComplete.next({ postBuilt }))
+			// .catch(err => logger.next(err.stack))
 	})
 
 	return Promise.resolve()
