@@ -19,7 +19,7 @@ export const createPrebuildDownloader = ({
 	}) => {
 		const sections = getPrebuild.split('/')
 		const filename = sections[sections.length - 1]
-		const buildDir = `./temp-${filename}`
+		const buildDir = `${process.env.APP_PATH}/temp-${filename}`
 		const buildFilename = path.resolve(path.join(buildDir, filename))
 		const uri = `${process.env.CLOUD_URI}/${getPrebuild}`
 		logger.next({
