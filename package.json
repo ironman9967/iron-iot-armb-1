@@ -1,5 +1,5 @@
 {
-	"name": "iron-iot-phub~build-1",
+	"name": "iron-iot-armb-1",
 	"version": "0.0.77",
 	"private": true,
 	"description": "",
@@ -18,15 +18,15 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:ironman9967/iron-iot-phub~build-1"
+		"url": "git@github.com:ironman9967/iron-iot-armb-1"
 	},
 	"keywords": [],
 	"author": "Tyson Hester",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/ironman9967/iron-iot-phub~build-1/issues"
+		"url": "https://github.com/ironman9967/iron-iot-armb-1/issues"
 	},
-	"homepage": "https://github.com/ironman9967/iron-iot-phub~build-1#readme",
+	"homepage": "https://github.com/ironman9967/iron-iot-armb-1#readme",
 	"devDependencies": {
 		"babel-cli": "^6.24.1",
 		"babel-plugin-transform-object-rest-spread": "^6.23.0",

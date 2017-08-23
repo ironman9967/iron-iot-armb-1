@@ -19,27 +19,31 @@ echo "getting app version from $CLOUD_URI/api/bin/versions/armb/1/app/version"
 version=`wget -qO- $CLOUD_URI/api/bin/versions/armb/1/app/version`
 echo "app version is $version"
 
-
-
 buildTar=built_armb-1_app_$version.tar.gz
 echo "trying to download $version built from $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar"
 wget -O $APP_PATH/$buildTar $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar`
 
-
-
-source $APP_PATH/common/scripts/build-app.sh $APP_PATH $version armb 1
-
 if [ $? == 0 ]
 then
-	echo "built release $version downloaded successfully"
+	echo "built release $version downloaded successfully from cloud"
 
+	echo "extracting release $appPath/$prebuild"
+	tar xvzf $APP_PATH/$buildTar --transform s:[^/]*:: -C $APP_PATH
+
+	if [ $? == 0 ]
+	then
+		rm $APP_PATH/$buildTar
+	else
+		echo "ERROR: release $version failed to extract: $APP_PATH/$buildTar"
+		exit 1
+	fi
 else
 	echo "$version not built"
 	echo "getting app for armb 1"
 	wget -O $APP_PATH/get-app.sh "https://raw.githubusercontent.com/ironman9967/iron-iot-common/master/scripts/get-app.sh"
 	source $APP_PATH/get-app.sh $APP_PATH armb 1
 
-	source $APP_PATH/common/scripts/build-app.sh $version armb 1
+	source $APP_PATH/common/scripts/build-app.sh $APP_PATH $version armb 1
 
 	rm -rf $APP_PATH/get-app.sh
 fi
