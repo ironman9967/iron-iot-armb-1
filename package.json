@@ -1,6 +1,6 @@
 {
 	"name": "iron-iot-armb-1",
-	"version": "0.0.91",
+	"version": "0.0.92",
 	"private": true,
 	"description": "",
 	"main": "index.js",
