@@ -16,8 +16,8 @@ import { createBuildPoster } from './build-poster'
 import { createHttpServer } from './http-server'
 import { routeApi } from './http-server/api'
 
-import { name } from './package.json'
-process.title = name
+const { name, version } = require(`${process.env.APP_PATH}/package.json`)
+process.title = `${name}@${version.substring(1)}`
 
 const port = 9978
 
@@ -53,7 +53,7 @@ createBuildPoster({
 			throw err
 		}
 		else {
-			logger.next(`${process.titie} ${process.version} started`)
+			logger.next(`${process.title} started`)
 			logger.next(`server up on ${port}`)
 			createPrebuildDownloader({ logger, downloadPrebuild, readyToBuild })
 				.then(({ downloadPrebuildList }) => downloadPrebuildList())
