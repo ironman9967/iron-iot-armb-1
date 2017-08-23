@@ -22,8 +22,18 @@ const logger = new Subject()
 const downloadPrebuild = new Subject()
 const readyToBuild = new Subject()
 const buildComplete = new Subject()
+const selfUpdateReady = new Subject()
 
-createBuildPoster({ logger, buildComplete })
+selfUpdateReady.subscribe(() => {
+	logger.next('!!! UPDATE READY !!!')
+	process.exit()
+})
+
+createBuildPoster({
+	logger,
+	buildComplete,
+	selfUpdateReady
+})
 	.then(() => createBuilder({ logger, readyToBuild, buildComplete }))
 	.then(() => createHttpServer({ port, logger, downloadPrebuild }))
 	.then(server => {

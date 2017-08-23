@@ -7,7 +7,11 @@ import {
 
 import request from 'request'
 
-export const createBuildPoster = ({ logger, buildComplete }) => {
+export const createBuildPoster = ({
+	logger,
+	buildComplete,
+	selfUpdateReady
+}) => {
 	buildComplete.subscribe(({ postBuilt }) => {
 		const sections = postBuilt.split('/')
 		const filename = sections[sections.length - 1]
@@ -31,6 +35,7 @@ export const createBuildPoster = ({ logger, buildComplete }) => {
 				throw new Error(`build failed to post: ${postBuilt}`)
 			}
 			removeSync(buildFilename)
+			selfUpdateReady.next()
 		})).form().append(filename, createReadStream(buildFilename))
 	})
 	return Promise.resolve()
