@@ -30,24 +30,8 @@ export const createBuildPoster = ({ logger, buildComplete }) => {
 			else if (res.statusCode != 201) {
 				throw new Error(`build failed to post: ${postBuilt}`)
 			}
+			removeSync(buildFilename)
 		})).form().append(filename, createReadStream(buildFilename))
-		
-		// createReadStream(buildFilename)
-		// 	.pipe(request({
-		// 		method: 'POST',
-		// 		uri: `${process.env.CLOUD_URI}/${postBuilt}`,
-		// 		headers: {
-		// 			'Content-Type': 'application/octet-stream'
-		// 		},
-    	// 		resolveWithFullResponse: true
-		// 	}, ((err, res) => {
-		// 		if (err) {
-		// 			throw err
-		// 		}
-		// 		else if (res.statusCode != 201) {
-		// 			throw new Error(`build failed to post: ${postBuilt}`)
-		// 		}
-		// 	})))
 	})
 	return Promise.resolve()
 }
