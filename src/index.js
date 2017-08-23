@@ -23,8 +23,6 @@ const downloadPrebuild = new Subject()
 const readyToBuild = new Subject()
 const buildComplete = new Subject()
 
-emptyDirSync('./builds')
-
 createBuildPoster({ logger, buildComplete })
 	.then(() => createBuilder({ logger, readyToBuild, buildComplete }))
 	.then(() => createHttpServer({ port, logger, downloadPrebuild }))
