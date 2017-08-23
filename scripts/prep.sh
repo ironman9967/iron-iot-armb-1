@@ -19,22 +19,22 @@ echo "getting app version from $CLOUD_URI/api/bin/versions/armb/1/app/version"
 version=`wget -qO- $CLOUD_URI/api/bin/versions/armb/1/app/version`
 echo "app version is $version"
 
-buildTar=built_armb-1_app_$version.tar.gz
+builtTar=built_armb-1_app_$version.tar.gz
 echo "trying to download $version built from $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar"
-wget -O $APP_PATH/$buildTar $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar
+wget -O $APP_PATH/$builtTar $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar
 
 if [ $? == 0 ]
 then
 	echo "built release $version downloaded successfully from cloud"
 
-	echo "extracting release $APP_PATH/$buildTar"
-	tar xvzf $APP_PATH/$buildTar --transform s:[^/]*:: -C $APP_PATH
+	echo "extracting release $APP_PATH/$builtTar"
+	tar xvzf $APP_PATH/$builtTar --transform s:[^/]*:: -C $APP_PATH
 
 	if [ $? == 0 ]
 	then
-		rm $APP_PATH/$buildTar
+		rm $APP_PATH/$builtTar
 	else
-		echo "ERROR: release $version failed to extract: $APP_PATH/$buildTar"
+		echo "ERROR: release $version failed to extract: $APP_PATH/$builtTar"
 		exit 1
 	fi
 else
