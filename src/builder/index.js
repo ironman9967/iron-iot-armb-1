@@ -18,8 +18,6 @@ export const createBuilder = ({
 		exec([ 'chmod', '+x', file ].join(' '),
 			(err, stdout, stderr) => {
 				if (err) {
-					err.stdout = stdout
-					err.stderr = stderr
 					reject(err)
 				}
 				else {
@@ -53,6 +51,7 @@ export const createBuilder = ({
 		logger.next({
 			message: 'building app',
 			data: {
+				buildDir,
 				buildScript,
 				model,
 				iteration,
@@ -64,6 +63,7 @@ export const createBuilder = ({
 			buildDir,
 			'&&',
 			buildScript,
+			buildDir,
 			version,
 			model,
 			iteration
@@ -84,8 +84,12 @@ export const createBuilder = ({
 		const args = [
 			'tar',
 			'czf',
-			`../builds/${builtFilename}`,
-			'.'
+			`./builds/${builtFilename}`,
+			'-C',
+			buildDir,
+			'.',
+			'--transform',
+			's:[^/]*::'
 		]
 		logger.next({
 			message: 'taring app',
@@ -95,7 +99,7 @@ export const createBuilder = ({
 				args
 			}
 		})
-		exec(args.join(' '), { cwd: buildDir }, (err, stdout, stderr) => {
+		exec(args.join(' '), (err, stdout, stderr) => {
 			if (err) {
 				reject(err)
 			}
