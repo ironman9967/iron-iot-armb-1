@@ -49,6 +49,7 @@ else
 fi
 
 mkdir -p $APP_PATH/builds
+chmod 777 $APP_PATH/builds
 
 echo "starting $repo app"
 chmod +x $APP_PATH/common/scripts/start.sh
