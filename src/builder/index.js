@@ -81,7 +81,7 @@ export const createBuilder = ({
 		const args = [
 			'tar',
 			'czf',
-			`./builds/${builtFilename}`,
+			`${process.env.APP_PATH}/builds/${builtFilename}`,
 			'-C',
 			buildDir,
 			'.',
