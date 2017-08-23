@@ -21,7 +21,7 @@ echo "app version is $version"
 
 buildTar=built_armb-1_app_$version.tar.gz
 echo "trying to download $version built from $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar"
-wget -O $APP_PATH/$buildTar $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar`
+wget -O $APP_PATH/$buildTar $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar
 
 if [ $? == 0 ]
 then
