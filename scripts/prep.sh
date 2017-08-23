@@ -20,7 +20,7 @@ version=`wget -qO- $CLOUD_URI/api/bin/versions/armb/1/app/version`
 echo "app version is $version"
 
 builtTar=built_armb-1_app_$version.tar.gz
-echo "trying to download $version built from $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar"
+echo "trying to download $version release from $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar"
 wget -O $APP_PATH/$builtTar $CLOUD_URI/bin/devices/builds/armb/1/app/$builtTar
 
 if [ $? == 0 ]
