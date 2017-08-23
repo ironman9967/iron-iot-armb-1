@@ -16,6 +16,9 @@ import { createBuildPoster } from './build-poster'
 import { createHttpServer } from './http-server'
 import { routeApi } from './http-server/api'
 
+import { name } from './package.json'
+process.title = name
+
 const port = 9978
 
 const logger = new Subject()
