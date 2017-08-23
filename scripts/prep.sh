@@ -27,7 +27,7 @@ if [ $? == 0 ]
 then
 	echo "built release $version downloaded successfully from cloud"
 
-	echo "extracting release $appPath/$prebuild"
+	echo "extracting release $APP_PATH/$buildTar"
 	tar xvzf $APP_PATH/$buildTar --transform s:[^/]*:: -C $APP_PATH
 
 	if [ $? == 0 ]
