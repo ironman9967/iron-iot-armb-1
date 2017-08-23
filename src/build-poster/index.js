@@ -35,7 +35,9 @@ export const createBuildPoster = ({
 				throw new Error(`build failed to post: ${postBuilt}`)
 			}
 			removeSync(buildFilename)
-			selfUpdateReady.next()
+			if (buildFileName.indexOf('armb-1') > 0) {
+				selfUpdateReady.next()
+			}
 		})).form().append(filename, createReadStream(buildFilename))
 	})
 	return Promise.resolve()
