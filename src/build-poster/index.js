@@ -12,11 +12,6 @@ export const createBuildPoster = ({
 	buildComplete,
 	selfUpdateReady
 }) => {
-
-	logger.next('debug', {
-		x: path.resolve('./builds')
-	})
-
 	buildComplete.subscribe(({ postBuilt }) => {
 		const sections = postBuilt.split('/')
 		const filename = sections[sections.length - 1]
