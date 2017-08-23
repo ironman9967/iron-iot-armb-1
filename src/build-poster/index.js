@@ -15,7 +15,8 @@ export const createBuildPoster = ({
 	buildComplete.subscribe(({ postBuilt }) => {
 		const sections = postBuilt.split('/')
 		const filename = sections[sections.length - 1]
-		const buildFilename = path.resolve(`./builds/${filename}`)
+		const buildFilename =
+			path.resolve(`${process.env.APP_PATH}/builds/${filename}`)
 		logger.next({
 			message: 'posting build',
 			data: {
