@@ -12,7 +12,10 @@ export const createBuildPoster = ({
 	buildComplete,
 	selfUpdateReady
 }) => {
-	buildComplete.subscribe(({ postBuilt }) => {
+	buildComplete.subscribe(({
+		device: { version },
+		postBuilt
+	}) => {
 		const sections = postBuilt.split('/')
 		const filename = sections[sections.length - 1]
 		const buildFilename =
@@ -36,7 +39,7 @@ export const createBuildPoster = ({
 				throw new Error(`build failed to post: ${postBuilt}`)
 			}
 			removeSync(buildFilename)
-			if (buildFilename.indexOf('armb-1') > -1) {
+			if (version != process.version && buildFilename.indexOf('armb-1') > -1) {
 				selfUpdateReady.next()
 			}
 		})).form().append(filename, createReadStream(buildFilename))

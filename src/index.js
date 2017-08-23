@@ -50,6 +50,7 @@ createBuildPoster({
 			throw err
 		}
 		else {
+			logger.next(`${process.titie} ${process.version} started`)
 			logger.next(`server up on ${port}`)
 			createPrebuildDownloader({ logger, downloadPrebuild, readyToBuild })
 				.then(({ downloadPrebuildList }) => downloadPrebuildList())

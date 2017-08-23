@@ -71,7 +71,11 @@ export const createBuilder = ({
 				reject(err)
 			}
 			else {
-				resolve()
+				resolve({
+					model,
+					iteration,
+					version
+				})
 			}
 		})
 	})
@@ -123,9 +127,15 @@ export const createBuilder = ({
 		})
 		return copyCommon(buildDir)
 			.then(() => runBuildApp(buildDir))
-			.then(() => tarBuild(buildDir, filename))
-			.then(() => removeSync(buildDir))
-			.then(() => buildComplete.next({ postBuilt }))
+			.then(device => {
+				tarBuild(buildDir, filename)
+				return device
+			})
+			.then(device => {
+				removeSync(buildDir)
+				return device
+			})
+			.then(device => buildComplete.next({ device, postBuilt }))
 			.catch(err => logger.next(err.stack))
 	})
 
