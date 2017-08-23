@@ -26,19 +26,17 @@ export const createBuilder = ({
 			})
 	})
 	const copyCommon = buildDir => new Promise((resolve, reject) => {
-		const commonDir = path.join(buildDir, 'common')
+		const from = path.join(process.env.APP_PATH, 'common')
+		const to = path.join(buildDir, 'common')
 		logger.next({
 			message: 'copying common',
-			data: {
-				from: './common',
-				to: commonDir
-			}
+			data: { from, to }
 		})
-		copy('./common', commonDir, err =>
+		copy(from, to, err =>
 			err
 				? reject(err)
 				: resolve(setExecPerms(
-					path.join(commonDir, 'scripts/build-app.sh'))))
+					path.join(to, 'scripts/build-app.sh'))))
 	})
 	const runBuildApp = buildDir => new Promise((resolve, reject) => {
 		const buildScript =
@@ -80,7 +78,6 @@ export const createBuilder = ({
 	const tarBuild = (buildDir, filename) => new Promise((resolve, reject) => {
 		const builtFilename =
 			`built_${filename.substring(filename.indexOf('_') + 1)}`
-		ensureDirSync('./builds')
 		const args = [
 			'tar',
 			'czf',
