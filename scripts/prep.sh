@@ -28,7 +28,7 @@ then
 	echo "built release $version downloaded successfully from cloud"
 
 	echo "extracting release $APP_PATH/$builtTar"
-	tar xvzf $APP_PATH/$builtTar --transform s:[^/]*:: -C $APP_PATH
+	tar xzf $APP_PATH/$builtTar --transform s:[^/]*:: -C $APP_PATH
 
 	if [ $? == 0 ]
 	then
