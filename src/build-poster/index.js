@@ -18,8 +18,7 @@ export const createBuildPoster = ({
 	}) => {
 		const sections = postBuilt.split('/')
 		const filename = sections[sections.length - 1]
-		const buildFilename =
-			path.resolve(`${process.env.APP_PATH}/builds/${filename}`)
+		const buildFilename = path.resolve(`../builds/${filename}`)
 		logger.next({
 			message: 'posting build',
 			data: {
@@ -38,7 +37,7 @@ export const createBuildPoster = ({
 			else if (res.statusCode != 201) {
 				throw new Error(`build failed to post: ${postBuilt}`)
 			}
-			removeSync(buildFilename)
+			//removeSync(buildFilename)
 			if (version != process.version && buildFilename.indexOf('armb-1') > -1) {
 				selfUpdateReady.next()
 			}

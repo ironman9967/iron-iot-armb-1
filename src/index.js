@@ -16,7 +16,7 @@ import { createBuildPoster } from './build-poster'
 import { createHttpServer } from './http-server'
 import { routeApi } from './http-server/api'
 
-const { name, version } = require(`${process.env.APP_PATH}/package.json`)
+import { name, version } from '../package.json'
 process.title = `${name}@${version.substring(1)}`
 
 const port = 9978
