@@ -7,6 +7,8 @@ import {
 
 import request from 'request'
 
+import { version as appVersion } from '../package.json'
+
 export const createBuildPoster = ({
 	logger,
 	buildComplete,
@@ -18,12 +20,14 @@ export const createBuildPoster = ({
 	}) => {
 		const sections = postBuilt.split('/')
 		const filename = sections[sections.length - 1]
-		const buildFilename = path.resolve(`./dist/builds/${filename}`)
+		const buildFilename =
+			path.resolve(`${process.env.APP_PATH}/dist/builds/${filename}`)
 		logger.next({
 			message: 'posting build',
 			data: {
 				buildFilename,
-				postBuilt
+				postBuilt,
+				appPath: process.env.APP_PATH
 			}
 		})
 		request({
@@ -38,7 +42,7 @@ export const createBuildPoster = ({
 				throw new Error(`build failed to post: ${postBuilt}`)
 			}
 			removeSync(buildFilename)
-			if (version != process.version && buildFilename.indexOf('armb-1') > -1) {
+			if (version != appVersion && buildFilename.indexOf('armb-1') > -1) {
 				selfUpdateReady.next()
 			}
 		})).form().append(filename, createReadStream(buildFilename))
