@@ -48,8 +48,8 @@ else
 	rm -rf $APP_PATH/get-app.sh
 fi
 
-mkdir -p $APP_PATH/builds
-chmod 777 $APP_PATH/builds
+mkdir -p $APP_PATH/dist/builds
+chmod 777 $APP_PATH/dist/builds
 
 echo "starting $repo app"
 chmod +x $APP_PATH/common/scripts/start.sh
