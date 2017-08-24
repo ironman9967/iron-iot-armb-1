@@ -85,7 +85,7 @@ export const createBuilder = ({
 		const args = [
 			'tar',
 			'czf',
-			`${process.env.APP_PATH}/builds/${builtFilename}`,
+			`${process.env.APP_PATH}/dist/builds/${builtFilename}`,
 			'-C',
 			buildDir,
 			'.',
@@ -125,16 +125,14 @@ export const createBuilder = ({
 				filename
 			}
 		})
-		return copyCommon(buildDir)
+		copyCommon(buildDir)
 			.then(() => runBuildApp(buildDir))
-			.then(device => {
-				tarBuild(buildDir, filename)
-				return device
-			})
-			.then(device => {
-				removeSync(buildDir)
-				return device
-			})
+			.then(device => tarBuild(buildDir, filename)
+				.then(() => device))
+			// .then(device => {
+			// 	// removeSync(buildDir)
+			// 	return device
+			// })
 			.then(device => buildComplete.next({ device, postBuilt }))
 			.catch(err => logger.next(err.stack))
 	})
