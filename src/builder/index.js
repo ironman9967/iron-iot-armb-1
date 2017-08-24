@@ -129,10 +129,10 @@ export const createBuilder = ({
 			.then(() => runBuildApp(buildDir))
 			.then(device => tarBuild(buildDir, filename)
 				.then(() => device))
-			// .then(device => {
-			// 	// removeSync(buildDir)
-			// 	return device
-			// })
+			.then(device => {
+				removeSync(buildDir)
+				return device
+			})
 			.then(device => buildComplete.next({ device, postBuilt }))
 			.catch(err => logger.next(err.stack))
 	})

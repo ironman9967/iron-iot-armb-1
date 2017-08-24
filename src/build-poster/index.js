@@ -37,7 +37,7 @@ export const createBuildPoster = ({
 			else if (res.statusCode != 201) {
 				throw new Error(`build failed to post: ${postBuilt}`)
 			}
-			// removeSync(buildFilename)
+			removeSync(buildFilename)
 			if (version != process.version && buildFilename.indexOf('armb-1') > -1) {
 				selfUpdateReady.next()
 			}
