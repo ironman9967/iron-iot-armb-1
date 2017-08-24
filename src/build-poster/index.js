@@ -7,7 +7,7 @@ import {
 
 import request from 'request'
 
-import { version as appVersion } from '../package.json'
+import { version as appVersion } from '../../package.json'
 
 export const createBuildPoster = ({
 	logger,
