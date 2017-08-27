@@ -146,7 +146,7 @@ export const createBuilder = ({
 					build: {
 						started,
 						completed,
-						duration: stopped - started
+						duration: completed - started
 					},
 					device,
 					postBuilt
