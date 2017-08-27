@@ -13,6 +13,9 @@ export const createBuilder = ({
 	readyToBuild,
 	buildComplete
 }) => {
+	let building = false
+	const builds = []
+
 	const setExecPerms = file => new Promise((resolve, reject) => {
 		logger.next([ 'setting exec perms', { file } ])
 		exec([ 'chmod', '+x', file ].join(' '),
@@ -105,6 +108,24 @@ export const createBuilder = ({
 		buildFilename,
 		postBuilt
 	}) => {
+		builds.push({
+			buildFilename,
+			postBuilt
+		})
+		if (!building) {
+			build(builds.shift())
+		}
+	})
+
+	buildComplete.subscribe(() => builds.length > 0
+		? build(builds.shift())
+		: void 0)
+
+	const build = ({
+		buildFilename,
+		postBuilt
+	}) => {
+		building = true
 		const buildDir = path.dirname(buildFilename)
 		const sections = buildFilename.split('/')
 		const filename = sections[sections.length - 1]
@@ -141,7 +162,7 @@ export const createBuilder = ({
 				})
 			)
 			.catch(err => logger.next(err.stack))
-	})
+	}
 
 	return Promise.resolve()
 }
