@@ -145,7 +145,7 @@ export const createBuilder = ({
 				buildComplete.next({
 					build: {
 						started,
-						stopped,
+						completed,
 						duration: stopped - started
 					},
 					device,
