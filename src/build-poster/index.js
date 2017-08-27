@@ -15,9 +15,11 @@ export const createBuildPoster = ({
 	selfUpdateReady
 }) => {
 	buildComplete.subscribe(({
+		build,
 		device: { version },
 		postBuilt
 	}) => {
+		logger.next([ 'build stats', build ])
 		const sections = postBuilt.split('/')
 		const filename = sections[sections.length - 1]
 		const buildFilename =

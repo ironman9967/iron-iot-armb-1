@@ -125,6 +125,7 @@ export const createBuilder = ({
 				filename
 			}
 		})
+		const started = new Date().getTime()
 		copyCommon(buildDir)
 			.then(() => runBuildApp(buildDir))
 			.then(device => tarBuild(buildDir, filename)
@@ -133,7 +134,24 @@ export const createBuilder = ({
 				removeSync(buildDir)
 				return device
 			})
-			.then(device => buildComplete.next({ device, postBuilt }))
+			.then(device => ({
+				build: {
+					started,
+					completed: new Date().getTime()
+				},
+				device
+			}))
+			.then(({ build: { started, completed }, device }) =>
+				buildComplete.next({
+					build: {
+						started,
+						stopped,
+						duration: stopped - started
+					},
+					device,
+					postBuilt
+				})
+			)
 			.catch(err => logger.next(err.stack))
 	})
 
