@@ -24,14 +24,11 @@ export const createBuildPoster = ({
 		const filename = sections[sections.length - 1]
 		const buildFilename =
 			path.resolve(`${process.env.APP_PATH}/dist/builds/${filename}`)
-		logger.next({
-			message: 'posting build',
-			data: {
-				buildFilename,
-				postBuilt,
-				appPath: process.env.APP_PATH
-			}
-		})
+		logger.next([ 'posting build', {
+			buildFilename,
+			postBuilt,
+			appPath: process.env.APP_PATH
+		}])
 		request({
 			method: 'POST',
 			uri: `${process.env.CLOUD_URI}/${postBuilt}`,

@@ -20,13 +20,10 @@ export const createPrebuildReadyApi = ({
 					postBuilt
 				}
 			}, reply) => {
-				logger.next({
-					message: 'prebuild ready',
-					data: {
-						getPrebuild,
-						postBuilt
-					}
-				})
+				logger.next([ 'prebuild ready', {
+					getPrebuild,
+					postBuilt
+				}])
 				downloadPrebuild.next({
 					getPrebuild: getPrebuild.substring(1),
 					postBuilt: postBuilt.substring(1)

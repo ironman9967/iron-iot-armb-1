@@ -17,7 +17,7 @@ import { createHttpServer } from './http-server'
 import { routeApi } from './http-server/api'
 
 import { name, version } from '../package.json'
-process.title = `${name}@${version.substring(1)}`
+process.title = `${name}@${version}`
 
 const port = 9978
 
@@ -42,7 +42,9 @@ createBuildPoster({
 	.then(server => {
 		logger.subscribe(arg => {
 			const { message, data } =
-				typeof arg == 'string' ? { message: arg } : arg
+				typeof arg == 'string' ? { message: arg } :
+				Array.isArray(arg) ? { message: arg[0], data: arg[1] } :
+				arg
 			server.log(message, data)
 		})
 		return server

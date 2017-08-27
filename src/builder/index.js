@@ -14,7 +14,7 @@ export const createBuilder = ({
 	buildComplete
 }) => {
 	const setExecPerms = file => new Promise((resolve, reject) => {
-		logger.next({ message: 'setting exec perms', data: { file } })
+		logger.next([ 'setting exec perms', { file } ])
 		exec([ 'chmod', '+x', file ].join(' '),
 			(err, stdout, stderr) => {
 				if (err) {
@@ -28,10 +28,7 @@ export const createBuilder = ({
 	const copyCommon = buildDir => new Promise((resolve, reject) => {
 		const from = path.join(process.env.APP_PATH, 'common')
 		const to = path.join(buildDir, 'common')
-		logger.next({
-			message: 'copying common',
-			data: { from, to }
-		})
+		logger.next([ 'copying common', { from, to } ])
 		copy(from, to, err =>
 			err
 				? reject(err)
@@ -46,16 +43,13 @@ export const createBuilder = ({
 			iteration,
 			version
 		] = buildDir.match(/temp-prebuild_(.*)-(.*)_app_(.*)\.tar\.gz/)
-		logger.next({
-			message: 'building app',
-			data: {
-				buildDir,
-				buildScript,
-				model,
-				iteration,
-				version
-			}
-		})
+		logger.next([ 'building app', {
+			buildDir,
+			buildScript,
+			model,
+			iteration,
+			version
+		}])
 		const args = [
 			'cd',
 			buildDir,
@@ -92,14 +86,11 @@ export const createBuilder = ({
 			'--transform',
 			's:[^/]*::'
 		]
-		logger.next({
-			message: 'taring app',
-			data: {
-				buildDir,
-				filename,
-				args
-			}
-		})
+		logger.next([ 'taring app', {
+			buildDir,
+			filename,
+			args
+		}])
 		exec(args.join(' '), (err, stdout, stderr) => {
 			if (err) {
 				reject(err)
@@ -117,14 +108,11 @@ export const createBuilder = ({
 		const buildDir = path.dirname(buildFilename)
 		const sections = buildFilename.split('/')
 		const filename = sections[sections.length - 1]
-		logger.next({
-			message: 'ready to build',
-			data: {
-				buildFilename,
-				buildDir,
-				filename
-			}
-		})
+		logger.next(['ready to build', {
+			buildFilename,
+			buildDir,
+			filename
+		}])
 		const started = new Date().getTime()
 		copyCommon(buildDir)
 			.then(() => runBuildApp(buildDir))
